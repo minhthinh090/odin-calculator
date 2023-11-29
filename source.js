@@ -6,6 +6,8 @@ let rightOperand = "";
 let operator = "";
 let flag = false;
 
+let chainCalculate = false;
+
 let buttons = document.querySelectorAll('button');
 
 function add(a, b)
@@ -35,6 +37,7 @@ function clear()
     rightOperand = "";
     operator = "";
     flag = false;
+    chainCalculate = false;
     let eraser = document.querySelectorAll(".displayLive");
     eraser.forEach((value) => {
         display.removeChild(value);
@@ -45,6 +48,7 @@ function operate(left, right, op)
 {
     clear();
     let result = 0;
+    chainCalculate = true;
     switch(op)
     {
         case "+": { 
@@ -72,9 +76,9 @@ function operate(left, right, op)
     }
 }
 
-function removeLastOperator()
+function removeLastOperator(className)
 {
-    display.removeChild(document.querySelector('.op'));
+    display.removeChild(document.querySelector('.' + className));
 }
 
 buttons.forEach(btn => btn.addEventListener("click", () => {
@@ -87,7 +91,7 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
     
     else if (OPERATOR.includes(btn.textContent)) {
         if (flag) 
-            if (OPERATOR.includes(btn.textContent)) removeLastOperator();
+            if (OPERATOR.includes(btn.textContent)) removeLastOperator("op");
         flag = true;
         operator = btn.textContent;
         show.classList.add('op');
@@ -95,19 +99,32 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
         display.appendChild(show); 
     }
     else { 
-        if (!flag) {
+        if (!flag && !chainCalculate) {
             matchedNum = btn.textContent.match(/[0-9]/g);
             if (matchedNum) leftOperand += matchedNum;
         }
-        else {
+        else if (!flag && chainCalculate)
+        {
+            if (!OPERATOR.includes(btn.textContent))
+            {
+                if(!(btn.textContent === "=")) {
+                    clear();
+                    leftOperand += btn.textContent.match(/[0-9]/g);
+                    console.log(leftOperand);
+                }
+            }
+        }
+        else if (flag) {
             matchedNum = btn.textContent.match(/[0-9]/g);
             if (matchedNum) rightOperand += matchedNum;
         }
-        
+
         if (btn.textContent === "=")
         {  
-            show.textContent = operate(+leftOperand, +rightOperand, operator);
-            display.appendChild(show); 
+            if (flag) {
+                show.textContent = operate(+leftOperand, +rightOperand, operator);
+                display.appendChild(show); 
+            }
         }
         else {
             show.textContent = btn.textContent;
