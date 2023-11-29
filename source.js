@@ -1,4 +1,12 @@
 let display = document.querySelector('#display');
+const OPERATOR = ['+', '-', '*', '/'];
+
+let leftOperand = "";
+let rightOperand = "";
+let operator = "";
+let flag = false;
+
+let buttons = document.querySelectorAll('button');
 
 function add(a, b)
 {
@@ -12,7 +20,7 @@ function subtract(a, b)
 
 function multiply(a, b)
 {
-    return a*b;
+    return a * b;
 }
 
 function divide(a, b)
@@ -20,62 +28,91 @@ function divide(a, b)
     return a / b;
 }
 
-let leftOperand = 0;
-let rightOperand = 0;
-let operator = "";
-
-function operate()
-{
-    let lastResult = 0;
-    let result = 0;
-    switch(operator)
-    {
-        case "+": { 
-            lastResult = result;
-            result += add(leftOperand, rightOperand);
-            break;
-        }
-        case "-": {
-            lastResult = result;
-            result -= subtract(leftOperand, rightOperand);
-            break;
-        }
-        case "*": {
-            lastResult = result;
-            result *= multiply(leftOperand, rightOperand);
-            break;
-        }
-        case "/": {
-            lastResult = result;
-            result /= divide(leftOperand, rightOperand);
-            break;
-        }
-        case "=": return result;
-    }
-    return 0;
-}
 
 function clear()
 {
+    leftOperand = "";
+    rightOperand = "";
+    operator = "";
+    flag = false;
     let eraser = document.querySelectorAll(".displayLive");
     eraser.forEach((value) => {
         display.removeChild(value);
     })
 }
 
-let btns = document.querySelectorAll('button');
+function operate(left, right, op)
+{
+    clear();
+    let result = 0;
+    switch(op)
+    {
+        case "+": { 
+            result = add(left, right);
+            leftOperand = result
+            return result;
+        }
+        case "-": {
+            result = subtract(left, right);
+            leftOperand = result;
+            return result;
+        }
+        case "*": {
+            result = multiply(left, right);
+            leftOperand = result;
+            return result;
+        }
+        case "/": {
+            result = divide(left, right);
+            leftOperand = result;
+            return result;
+        }
+        default:
+            return "Undefined";
+    }
+}
 
-btns.forEach(btn => btn.addEventListener("click", () => {
+function removeLastOperator()
+{
+    display.removeChild(document.querySelector('.op'));
+}
+
+buttons.forEach(btn => btn.addEventListener("click", () => {
+    let show = document.createElement('div');
+    show.classList.add("displayLive")
     if(btn.textContent === "Clear")
     {
         clear();
     }
-    else {
-        console.log(btn.textContent);
-        let show = document.createElement('div');
-        show.classList.add("displayLive")
+    
+    else if (OPERATOR.includes(btn.textContent)) {
+        if (flag) 
+            if (OPERATOR.includes(btn.textContent)) removeLastOperator();
+        flag = true;
+        operator = btn.textContent;
+        show.classList.add('op');
         show.textContent = btn.textContent;
         display.appendChild(show); 
-    } 
+    }
+    else { 
+        if (!flag) {
+            matchedNum = btn.textContent.match(/[0-9]/g);
+            if (matchedNum) leftOperand += matchedNum;
+        }
+        else {
+            matchedNum = btn.textContent.match(/[0-9]/g);
+            if (matchedNum) rightOperand += matchedNum;
+        }
+        
+        if (btn.textContent === "=")
+        {  
+            show.textContent = operate(+leftOperand, +rightOperand, operator);
+            display.appendChild(show); 
+        }
+        else {
+            show.textContent = btn.textContent;
+            display.appendChild(show); 
+        }
+    }
 })
 )
