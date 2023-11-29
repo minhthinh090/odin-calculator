@@ -53,7 +53,7 @@ function operate(left, right, op)
     {
         case "+": { 
             result = add(left, right);
-            leftOperand = result
+            leftOperand = result;
             return result;
         }
         case "-": {
@@ -90,8 +90,18 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
     }
     
     else if (OPERATOR.includes(btn.textContent)) {
-        if (flag) 
+        if (flag && !rightOperand) 
             if (OPERATOR.includes(btn.textContent)) removeLastOperator("op");
+        if (flag && rightOperand)
+        {
+            console.log("WTF");
+            leftOperand = operate(+leftOperand, +rightOperand, operator);
+            
+            let div = document.createElement('div');
+            div.classList.add("displayLive");
+            div.textContent = leftOperand;
+            display.appendChild(div);
+        }
         flag = true;
         operator = btn.textContent;
         show.classList.add('op');
@@ -99,6 +109,7 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
         display.appendChild(show); 
     }
     else { 
+        
         if (!flag && !chainCalculate) {
             matchedNum = btn.textContent.match(/[0-9]/g);
             if (matchedNum) leftOperand += matchedNum;
