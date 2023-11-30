@@ -1,6 +1,6 @@
 let display = document.querySelector('.display-text');
 const OPERATOR = ['+', '-', '*', '/'];
-const EXTRA = ['.', 'Clear'];
+const EXTRA = ['.', 'Clear', '%'];
 const NUMBER = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const roundNumber = 10000; //Round 10^x number of decimal
 
@@ -35,6 +35,13 @@ function divide(a, b)
     return a / b;
 }
 
+function clearScreen()
+{
+    let eraser = document.querySelectorAll(".displayLive");
+    eraser.forEach((value) => {
+        display.removeChild(value);
+    })
+}
 
 function clear()
 {
@@ -180,7 +187,30 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
                         }
                     }
                 }
+                break;
             }
+            case '%': {
+                if (!flag) 
+                {
+                    leftOperand = Math.round(+leftOperand/100 * roundNumber)/roundNumber
+                    show.textContent = leftOperand;
+                    clearScreen();
+                    console.log(leftOperand);
+                }
+                else 
+                {
+                    rightOperand = Math.round(+rightOperand/100 * roundNumber)/roundNumber;
+                    
+                    clearScreen();
+                    let tmp = document.createElement('span');
+                    tmp.classList.add('displayLive');
+                    display.appendChild(tmp);
+                    tmp = leftOperand + operator;
+                    show.textContent = tmp + rightOperand;
+                    console.log(rightOperand);
+                }
+            }
+
         }
     }
 
