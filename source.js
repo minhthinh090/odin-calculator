@@ -1,10 +1,12 @@
 let display = document.querySelector('#display');
 const OPERATOR = ['+', '-', '*', '/'];
+const roundNumber = 10000; //Round 10^x number of decimal
 
 let leftOperand = "";
 let rightOperand = "";
 let operator = "";
 let flag = false;
+let dividedByZero = false;
 
 let chainCalculate = false;
 
@@ -76,7 +78,7 @@ function operate(left, right, op)
     }
 }
 
-function removeLastOperator(className)
+function removeElementByClass(className)
 {
     display.removeChild(document.querySelector('.' + className));
 }
@@ -84,23 +86,40 @@ function removeLastOperator(className)
 buttons.forEach(btn => btn.addEventListener("click", () => {
     let show = document.createElement('div');
     show.classList.add("displayLive")
+    if (dividedByZero) {
+        display.removeChild(document.querySelector('.zeroDivisor'));
+        dividedByZero = false;
+    }
+
     if(btn.textContent === "Clear")
     {
         clear();
     }
+    else if (dividedByZero) {
+        display.removeChild(document.querySelector('.zeroDivisor'));
+        dividedByZero = false;
+    }
     
     else if (OPERATOR.includes(btn.textContent)) {
         if (flag && !rightOperand) 
-            if (OPERATOR.includes(btn.textContent)) removeLastOperator("op");
-        if (flag && rightOperand)
+            if (OPERATOR.includes(btn.textContent)) removeElementByClass("op");
+        if (flag && rightOperand && rightOperand !== '0')
         {
-            console.log("WTF");
-            leftOperand = operate(+leftOperand, +rightOperand, operator);
+            leftOperand = Math.round(operate(+leftOperand, +rightOperand, operator)*roundNumber) / roundNumber;
+
             
             let div = document.createElement('div');
             div.classList.add("displayLive");
             div.textContent = leftOperand;
             display.appendChild(div);
+        }
+        else if (flag && rightOperand && rightOperand === '0')
+        {
+            clear();
+            show.classList.add('zeroDivisor');
+            show.textContent += "Cannot divide a number by 0.";
+            display.appendChild(show);
+            dividedByZero = true;
         }
         flag = true;
         operator = btn.textContent;
@@ -132,9 +151,16 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
 
         if (btn.textContent === "=")
         {  
-            if (flag) {
-                show.textContent = operate(+leftOperand, +rightOperand, operator);
+            if (flag && rightOperand !== '0') {
+                show.textContent = Math.round(operate(+leftOperand, +rightOperand, operator)*roundNumber) / roundNumber;
                 display.appendChild(show); 
+            }
+            else {
+                clear();
+                show.classList.add('zeroDivisor');
+                show.textContent += "Cannot divide a number by 0.";
+                display.appendChild(show);
+                dividedByZero = true;
             }
         }
         else {
