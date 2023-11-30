@@ -1,4 +1,4 @@
-let display = document.querySelector('#display');
+let display = document.querySelector('.display-text');
 const OPERATOR = ['+', '-', '*', '/'];
 const EXTRA = ['.', 'Clear'];
 const NUMBER = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
