@@ -135,17 +135,28 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
         }
         else if (flag && rightOperand)
         {
-            leftOperand = Math.round(operate(+leftOperand, +rightOperand, operator) * roundNumber) / roundNumber;
+            if (rightOperand === "0" && operator === "/" )
+            {
+                clear();
+                dividedByZero = true;
+                let div = document.createElement('span');
+                div.classList.add('zeroDivisor');
+                display.appendChild(div);
+                div.textContent = "Cannot divide by 0.";
+            }
+            else {
+                leftOperand = Math.round(operate(+leftOperand, +rightOperand, operator) * roundNumber) / roundNumber;
 
-            operator = btn.textContent;
-            show.classList.add('op');
-            let div = document.createElement('span');
-            div.classList.add('displayLive');
-            div.textContent = leftOperand; 
-            display.appendChild(div);
-            show.textContent = btn.textContent;
-            chainCalculate = true;
-            flag = true;
+                operator = btn.textContent;
+                show.classList.add('op');
+                let div = document.createElement('span');
+                div.classList.add('displayLive');
+                div.textContent = leftOperand; 
+                display.appendChild(div);
+                show.textContent = btn.textContent;
+                chainCalculate = true;
+                flag = true;
+            }
         }
         else
         {
@@ -153,6 +164,7 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
             operator = btn.textContent;
             show.classList.add('op');
             show.textContent = btn.textContent;
+            decimalDetect=false;
         }
     }
     else if (EXTRA.includes(btn.textContent))
@@ -175,7 +187,19 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
                     }
                     else
                     {
-                        if (!flag && !decimalDetect) {
+                        if (!flag && leftOperand == "")
+                        {
+                            leftOperand = "0."; 
+                            show.textContent += leftOperand;
+                            decimalDetect = true;
+                        }
+                        else if (flag && rightOperand == "")
+                        {
+                            rightOperand = "0.";
+                            show.textContent += rightOperand;
+                            decimalDetect = true;
+                        }
+                        else if (!flag && !decimalDetect) {
                             leftOperand += '.';
                             show.textContent += '.';
                             decimalDetect = true;
