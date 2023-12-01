@@ -245,9 +245,26 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
                 }
                 else if (flag && rightOperand)
                 {
-                    operator === '+' ? operator = '-' : operator = '+';
-                    clearScreen();
-                    show.textContent = leftOperand + operator + rightOperand;
+                    if (operator === '+') {
+                        operator = '-';
+                        clearScreen();
+                        show.textContent = leftOperand + operator + rightOperand;
+                    }
+                    else if (operator === '-') {
+                        operator = '+';
+                        clearScreen();
+                        show.textContent = leftOperand + operator + rightOperand;
+                    }
+                    else {
+                        if (rightOperand[0] === '-') rightOperand = rightOperand.slice(1);
+                        else rightOperand = '-' + rightOperand;
+                        clearScreen();
+                        let tmp = document.createElement('span');
+                        tmp.classList.add('displayLive');
+                        display.appendChild(tmp);
+                        tmp = leftOperand + operator;
+                        show.textContent = tmp + rightOperand;
+                    }
                 }
             }
         }
