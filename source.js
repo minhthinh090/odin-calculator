@@ -236,21 +236,18 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
             case '+/-': {
                 if (!flag && leftOperand)
                 {
+                    leftOperand = leftOperand.toString();
                     if (leftOperand[0] != '-') leftOperand = '-' + leftOperand;
                     else leftOperand = leftOperand.slice(1);
                     clearScreen();
+                    
                     show.textContent = leftOperand;
                 }
                 else if (flag && rightOperand)
                 {
-                    if (rightOperand[0] != '-') rightOperand = '-' + rightOperand;
-                    else rightOperand = rightOperand.slice(1);
+                    operator === '+' ? operator = '-' : operator = '+';
                     clearScreen();
-                    let tmp = document.createElement('span');
-                    tmp.classList.add('displayLive');
-                    display.appendChild(tmp);
-                    tmp = leftOperand + operator;
-                    show.textContent = tmp + rightOperand;
+                    show.textContent = leftOperand + operator + rightOperand;
                 }
             }
         }
