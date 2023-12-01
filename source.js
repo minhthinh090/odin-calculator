@@ -1,6 +1,6 @@
 let display = document.querySelector('.display-text');
 const OPERATOR = ['+', '-', '*', '/'];
-const EXTRA = ['.', 'Clear', '%'];
+const EXTRA = ['.', 'Clear', '%', '+/-'];
 const NUMBER = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const roundNumber = 10000; //Round 10^x number of decimal
 
@@ -219,7 +219,6 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
                     leftOperand = Math.round(+leftOperand/100 * roundNumber)/roundNumber
                     show.textContent = leftOperand;
                     clearScreen();
-                    console.log(leftOperand);
                 }
                 else 
                 {
@@ -231,10 +230,29 @@ buttons.forEach(btn => btn.addEventListener("click", () => {
                     display.appendChild(tmp);
                     tmp = leftOperand + operator;
                     show.textContent = tmp + rightOperand;
-                    console.log(rightOperand);
+                }
+                break;
+            }
+            case '+/-': {
+                if (!flag && leftOperand)
+                {
+                    if (leftOperand[0] != '-') leftOperand = '-' + leftOperand;
+                    else leftOperand = leftOperand.slice(1);
+                    clearScreen();
+                    show.textContent = leftOperand;
+                }
+                else if (flag && rightOperand)
+                {
+                    if (rightOperand[0] != '-') rightOperand = '-' + rightOperand;
+                    else rightOperand = rightOperand.slice(1);
+                    clearScreen();
+                    let tmp = document.createElement('span');
+                    tmp.classList.add('displayLive');
+                    display.appendChild(tmp);
+                    tmp = leftOperand + operator;
+                    show.textContent = tmp + rightOperand;
                 }
             }
-
         }
     }
 
